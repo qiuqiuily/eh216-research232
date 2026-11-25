@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EH216-S 无人驾驶载人 eVTOL · 技术—场景—市场深度调研 | 飞行汽车技术基础 案例 01B</title>
+<meta name="description" content="课程案例研究：以证据分级方法全面分析亿航 EH216-S 的技术可行性、应用场景、适航与市场可行性，并对比全球主要 eVTOL 机型。">
+<style>
+:root{
+  --ink:#17212b; --ink-2:#3d4c5a; --ink-3:#6b7b89;
+  --bg:#f6f8fa; --surface:#fff; --surf2:#eff4f7; --line:#dbe4e9;
+  --brand:#125e78; --brand-soft:#e7f1f5; --brand-deep:#0b4356;
+  --accent:#b45309; --accent-soft:#fdf2e5;
+  --good:#147a53; --good-soft:#e7f5ed;
+  --warn:#9a6b00; --warn-soft:#fdf5dc;
+  --bad:#a93a3a; --bad-soft:#fbeded;
+  --info:#2f5f9e; --info-soft:#edf3fb;
+  --radius:10px; --shadow:0 1px 2px rgba(16,36,52,.06),0 8px 24px rgba(16,36,52,.05);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:Georgia,"Songti SC","SimSun",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.78;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none;border-bottom:1px solid rgba(18,94,120,.28)}
+a:hover{color:var(--brand-deep);border-bottom-color:var(--brand-deep)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--brand),#4aa3b8);z-index:100;transition:width .1s linear}
+header.top{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top-inner{max-width:1280px;margin:0 auto;padding:11px 28px;display:flex;align-items:center;gap:18px;min-height:60px}
+.brandmark{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--brand-deep);white-space:nowrap}
+.brandmark .glyph{width:30px;height:30px;border-radius:8px;background:var(--brand);color:#fff;display:grid;place-items:center;font-family:var(--mono);font-size:13px}
+.brandmark small{display:block;font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:.04em}
+.top-nav{margin-left:auto;display:flex;gap:18px;font-size:13.5px;flex-wrap:wrap}
+.top-nav a{color:var(--ink-2);border:0}
+.top-nav a:hover{color:var(--brand)}
+.menu-toggle{display:none;margin-left:auto;background:var(--brand);color:#fff;border:0;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer}
+.hero{background:linear-gradient(160deg,#fff 0%,#eef5f7 62%,#e3eff2 100%);border-bottom:1px solid var(--line)}
+.hero-inner{padding:52px 0 44px;display:grid;grid-template-columns:1fr 330px;gap:46px;align-items:start}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.13em;color:var(--brand);text-transform:uppercase;font-weight:600}
+h1{font-size:clamp(30px,3.6vw,48px);line-height:1.22;margin:14px 0 8px;letter-spacing:-.02em;font-weight:750}
+h1 .sub{display:block;font-size:clamp(14px,1.45vw,19px);font-weight:500;color:var(--ink-2);font-family:var(--serif);letter-spacing:0;margin-top:8px}
+.lead{font-size:17px;color:var(--ink-2);max-width:790px;margin:18px 0 0}
+.meta-line{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.chip{font-size:12.5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:var(--ink-2)}
+.chip b{color:var(--ink);font-weight:650}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 12px;box-shadow:var(--shadow)}
+.kpi .num{font-family:var(--mono);font-size:21px;font-weight:700;color:var(--brand-deep);line-height:1.2}
+.kpi .lab{font-size:12px;color:var(--ink-2);margin-top:6px;font-weight:600}
+.kpi .note{font-size:11px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.hero-figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.hero-figure svg{display:block;width:100%;height:auto}
+.figcap{font-size:11.5px;color:var(--ink-3);padding:10px 12px;border-top:1px solid var(--line);line-height:1.6}
+.layout{display:grid;grid-template-columns:216px minmax(0,1fr);gap:42px;align-items:start;padding:34px 0 70px}
+.toc{position:sticky;top:88px;max-height:calc(100vh - 110px);overflow:auto;font-size:13px}
+.toctitle{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink-3);margin-bottom:12px;text-transform:uppercase}
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:toc}
+.toc li{counter-increment:toc;margin:0 0 2px}
+.toc li a{display:block;border:0;color:var(--ink-2);padding:5px 10px;border-left:2px solid transparent;border-radius:0 5px 5px 0;line-height:1.45}
+.toc li a:hover{background:var(--brand-soft);color:var(--brand-deep)}
+.toc li a.active{background:var(--brand-soft);border-left-color:var(--brand);color:var(--brand-deep);font-weight:700}
+main{min-width:0}
+section{scroll-margin-top:88px;margin-bottom:54px}
+.h2wrap{border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:22px}
+h2{font-size:25px;line-height:1.35;margin:0;font-weight:730;display:flex;align-items:baseline;gap:12px}
+h2 .idx{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.06em}
+h2 .en{font-family:var(--serif);font-size:14px;color:var(--ink-3);font-weight:400;margin-left:10px;font-style:italic}
+h3{font-size:17px;margin:28px 0 10px;font-weight:700;color:var(--ink)}
+h4{font-size:14.5px;margin:18px 0 7px;font-weight:700;color:var(--brand-deep)}
+p{margin:0 0 13px}
+.lead-p{font-size:16.5px;color:var(--ink-2)}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin-bottom:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);margin:16px 0}
+.card.tight{padding:14px 16px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.claim{border-left:3px solid var(--brand);background:var(--brand-soft);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:18px 0;font-size:15px}
+.claim.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.claim.bad{border-left-color:var(--bad);background:var(--bad-soft)}
+.claim.good{border-left-color:var(--good);background:var(--good-soft)}
+.claim b{color:var(--ink)}
+.ev{display:inline-block;font-family:var(--mono);font-size:10.5px;line-height:1.4;padding:1px 6px;border-radius:4px;vertical-align:middle;white-space:nowrap;font-weight:600;border:1px solid}
+.ev-o{color:#0b5d73;background:#e6f4f7;border-color:#a9d4dd}
+.ev-f{color:#244e86;background:#eaf1fb;border-color:#b3c9e6}
+.ev-m{color:#7a5200;background:#fdf3d9;border-color:#e3c476}
+.ev-s{color:#166b4a;background:#e8f5ee;border-color:#a8d6be}
+.ev-c{color:#9c3232;background:#fbeaea;border-color:#e2aeae}
+.ev-d{color:#5a4a82;background:#f0ecf8;border-color:#c9bde3}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+th,td{padding:9px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);line-height:1.6}
+th{background:var(--surf2);font-size:12px;letter-spacing:.02em;color:var(--ink-2);font-weight:700;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fafcfd}
+td.n{font-family:var(--mono);white-space:nowrap}
+.small{font-size:12.5px;color:var(--ink-3)}
+figure{margin:20px 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-size:11.5px;color:var(--ink-3);padding:10px 14px;border-top:1px solid var(--line)}
+sup.ref a{font-family:var(--mono);font-size:10px;border:0;color:var(--brand)}
+.formula{font-family:var(--mono);background:var(--surf2);border:1px solid var(--line);border-radius:6px;padding:10px 13px;font-size:12.5px;line-height:1.8;overflow-x:auto;margin:10px 0}
+.stars{color:var(--accent);letter-spacing:1px;white-space:nowrap;font-size:13px}
+.tag{display:inline-block;font-size:11px;background:var(--surf2);border:1px solid var(--line);border-radius:4px;padding:1px 7px;margin:2px 3px 2px 0;color:var(--ink-2)}
+.gate{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);margin:9px 0}
+.gate .mark{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;flex:0 0 auto;font-family:var(--mono)}
+.gate.go .mark{background:var(--good-soft);color:var(--good);border:1px solid #a8d6be}
+.gate.no .mark{background:var(--bad-soft);color:var(--bad);border:1px solid #e2aeae}
+.gate.hold .mark{background:var(--warn-soft);color:var(--warn);border:1px solid #e3c476}
+.src{font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:3px;border:1px solid var(--line);background:var(--surf2);color:var(--ink-3);white-space:nowrap}
+#refs li{font-size:13px;line-height:1.65;margin-bottom:9px}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:12px;color:var(--ink-3)}
+@media(max-width:1000px){
+  .hero-inner{grid-template-columns:1fr;gap:24px}.hero-figure{max-width:520px}
+  .layout{grid-template-columns:1fr;gap:18px}.toc{display:none}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .top-nav{display:none}.menu-toggle{display:block}
+  .toc-mobile{display:block;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:22px}
+  .toc-mobile summary{cursor:pointer;font-weight:700;font-size:13px}
+  .toc-mobile ol{font-size:12.5px;margin-top:10px}
+}
+@media(min-width:1001px){.toc-mobile{display:none}}
+@media(max-width:600px){.wrap{padding:0 16px}.top-inner{padding:9px 16px}.kpis{grid-template-columns:1fr 1fr}.kpi .num{font-size:18px}table{font-size:12px}th,td{padding:7px 8px}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="top"><div class="top-inner">
+  <div class="brandmark"><span class="glyph">FVT</span><span>飞行汽车技术基础<small>Case Study 01B · EH216-S</small></span></div>
+  <nav class="top-nav"><a href="#summary">执行摘要</a><a href="#method">证据边界</a><a href="#architecture">关键技术</a><a href="#feasibility">技术可行性</a><a href="#safety">安全适航</a><a href="#market">市场可行性</a><a href="#refs">参考文献</a></nav>
+  <button class="menu-toggle" id="menuBtn">目录</button>
+</div></header>
+
+<div class="hero"><div class="wrap hero-inner">
+  <div>
+    <div class="eyebrow">课程案例研究 · Case Study 01B · 技术 / 场景 / 市场 · 证据截止 2026-11-25 · v1.0</div>
+    <h1>EH216-S 无人驾驶载人 eVTOL<span class="sub">Technology, Applications &amp; Market Feasibility — EHang EH216-S</span></h1>
+    <p class="lead">以亿航智能 EH216-S 为对象，用证据分级方法逐层检验：<b>它是不是"飞行汽车"？技术边界在哪？安全证据有多强？四证齐全之后，商业闭环为什么仍然没有跑通？</b>核心判断：<b>取证领先 ≠ 商业领先</b>——EH216-S 回答了"能不能飞"，但尚未回答"能不能规模化赚钱"。</p>
+    <div class="meta-line">
+      <span class="chip">研究对象 <b>EH216-S 无人驾驶载人航空器</b></span>
+      <span class="chip">构型 <b>8 轴 16 旋翼 / 多旋翼</b></span>
+      <span class="chip">方法 <b>证据分级 + 数量级校核 + 敏感性分析</b></span>
+      <span class="chip">立场 <b>技术审查，非宣传背书</b></span>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="num">4 证</div><div class="lab">TC / PC / AC / OC 齐全</div><div class="note">全球首款 <span class="ev ev-o">官方</span></div></div>
+      <div class="kpi"><div class="num">30 km / 25 min</div><div class="lab">设计航程 / 续航</div><div class="note">官网口径 <span class="ev ev-o">官方</span></div></div>
+      <div class="kpi"><div class="num">620 kg</div><div class="lab">最大起飞重量</div><div class="note">媒体另有 650 kg <span class="ev ev-c">冲突</span></div></div>
+      <div class="kpi"><div class="num">9 万+</div><div class="lab">累计安全飞行架次</div><div class="note">公司口径 2026-08 <span class="ev ev-f">财报</span></div></div>
+    </div>
+  </div>
+  <figure class="hero-figure">
+    <svg viewBox="0 0 330 300" role="img" aria-label="EH216-S 四证与商业化关口概念图">
+      <rect width="330" height="300" fill="#eef5f7"/>
+      <text x="14" y="21" font-family="monospace" font-size="9" fill="#48626d">FIG. 0 / CERTIFICATION VS. COMMERCIALIZATION</text>
+      <g font-family="-apple-system,PingFang SC,sans-serif" font-size="9.5" fill="#17212b">
+        <rect x="18" y="42" width="128" height="34" rx="5" fill="#e7f1f5" stroke="#9cc6d2" stroke-width=".7"/><text x="82" y="64" text-anchor="middle">TC 型号合格证</text>
+        <rect x="18" y="88" width="128" height="34" rx="5" fill="#e7f1f5" stroke="#9cc6d2" stroke-width=".7"/><text x="82" y="110" text-anchor="middle">PC 生产许可证</text>
+        <rect x="18" y="134" width="128" height="34" rx="5" fill="#e7f1f5" stroke="#9cc6d2" stroke-width=".7"/><text x="82" y="156" text-anchor="middle">AC 标准适航证</text>
+        <rect x="18" y="180" width="128" height="34" rx="5" fill="#e7f1f5" stroke="#9cc6d2" stroke-width=".7"/><text x="82" y="202" text-anchor="middle">OC 运营合格证</text>
+        <path d="M82 76 L82 88 M82 122 L82 134 M82 168 L82 180" stroke="#125e78" stroke-width="1.4"/>
+        <path d="M146 214 C190 214 186 128 218 128" fill="none" stroke="#b45309" stroke-width="1.8" stroke-dasharray="4 3"/>
+        <rect x="196" y="96" width="118" height="62" rx="6" fill="#fdf2e5" stroke="#dfb887" stroke-width=".8"/>
+        <text x="255" y="116" text-anchor="middle" fill="#8a4b08" font-size="10" font-weight="700">商业化关口</text>
+        <text x="255" y="134" text-anchor="middle" font-size="8.5">公开售票 / 航线批复</text>
+        <text x="255" y="148" text-anchor="middle" font-size="8.5">日利用率 / 单机经济</text>
+        <rect x="196" y="182" width="118" height="52" rx="6" fill="#fff" stroke="#dbe4e9" stroke-width=".8"/>
+        <text x="255" y="202" text-anchor="middle" font-size="9" fill="#3d4c5a">Q1 交付 4 架</text>
+        <text x="255" y="218" text-anchor="middle" font-size="9" fill="#3d4c5a">6 亿元指引撤回</text>
+      </g>
+      <text x="14" y="266" font-family="monospace" font-size="8.5" fill="#48626d">左：制度性门槛已全部跨过</text>
+      <text x="14" y="281" font-family="monospace" font-size="8.5" fill="#48626d">右：市场性门槛仍在验证</text>
+    </svg>
+    <figcaption>图 0 · 本案例的中心张力：制度性取证完成，不等于市场性闭环成立。依据亿航财报与媒体报道综合绘制 <sup class="ref"><a href="#r2">[2]</a></sup><sup class="ref"><a href="#r10">[10]</a></sup>。</figcaption>
+  </figure>
+</div></div>
+
+<div class="wrap">
+<details class="toc-mobile"><summary>展开章节目录</summary><ol>
+<li><a href="#summary">执行摘要</a></li><li><a href="#method">研究设计与证据边界</a></li><li><a href="#timeline">发展时间线</a></li><li><a href="#product">产品定义与参数</a></li><li><a href="#architecture">系统架构与关键技术</a></li><li><a href="#feasibility">技术可行性校核</a></li><li><a href="#safety">安全与适航证据</a></li><li><a href="#scenarios">应用场景矩阵</a></li><li><a href="#market">市场可行性</a></li><li><a href="#competition">竞品比较</a></li><li><a href="#model">商业模式复盘</a></li><li><a href="#gate">Go / No-Go 门槛</a></li><li><a href="#limits">局限与结论</a></li><li><a href="#refs">参考文献</a></li>
+</ol></details>
+<div class="layout">
+<aside class="toc"><div class="toctitle">目录 / Contents</div><ol>
+  <li><a href="#summary">执行摘要</a></li>
+  <li><a href="#method">研究设计与证据边界</a></li>
+  <li><a href="#timeline">发展时间线</a></li>
+  <li><a href="#product">产品定义与参数</a></li>
+  <li><a href="#architecture">系统架构与关键技术</a></li>
+  <li><a href="#feasibility">技术可行性校核</a></li>
+  <li><a href="#safety">安全与适航证据</a></li>
+  <li><a href="#scenarios">应用场景矩阵</a></li>
+  <li><a href="#market">市场可行性</a></li>
+  <li><a href="#competition">竞品比较</a></li>
+  <li><a href="#model">商业模式复盘</a></li>
+  <li><a href="#gate">Go / No-Go 门槛</a></li>
+  <li><a href="#limits">局限与结论</a></li>
+  <li><a href="#refs">参考文献</a></li>
+</ol></aside>
+<main>
+
+<section id="summary">
+  <div class="h2wrap"><h2><span class="idx">00</span><span>执行摘要<span class="en">Executive Summary</span></span></h2></div>
+  <p class="lead-p">EH216-S 不是"会飞的汽车"，而是一台<b>无人驾驶的载人多旋翼飞行器</b>。它用"取消驾驶员 + 多旋翼分布式动力 + 地面集群调度"换取了结构简单、冗余充分和取证路径清晰；代价是<b>航程短（30 km）、速度低（130 km/h）、充电慢（约 120 min）</b>。它在制度层面做到全球第一——首个集齐 TC、PC、AC、OC 的载人 eVTOL；但在市场层面，公开售票、单机利用率和正向单位经济性仍未得到验证。</p>
+
+  <div class="grid3">
+    <div class="card tight"><h4>技术可行性</h4><p style="font-size:13.5px">多旋翼构型成熟、冗余设计充分；悬停功率数量级与 25 min 续航自洽。瓶颈不在"能不能飞"，而在<b>能量密度—热管理—日利用率</b>的三角约束。<span class="ev ev-d">本文判断</span></p></div>
+    <div class="card tight"><h4>场景可行性</h4><p style="font-size:13.5px">受限空域内的<b>景区观光 / 园区接驳 / 警务巡逻</b>最现实；城市通勤与城际出行受航程、空域、公众接受度三重制约，近期不成立。<span class="ev ev-d">本文判断</span></p></div>
+    <div class="card tight"><h4>市场可行性</h4><p style="font-size:13.5px">硬件销售真实发生（2025 年交付 169 架 EH216 系列），但收入波动大、连续亏损、应收账款上升；<b>公众售票闭环</b>尚未建立。<span class="ev ev-f">财报</span></p></div>
+  </div>
+
+  <div class="claim bad"><b>本案例最重要的证据冲突：</b>多个媒体与百科条目称 EH216-S "2026 年 3 月正式启动面向公众商业化运营"<sup class="ref"><a href="#r5">[5]</a></sup><sup class="ref"><a href="#r23">[23]</a></sup>；但亿航 2026 年一季报明确写道，公司"正与民航局合作满足额外运行与安全要求，<b>以启动公众售票飞行服务</b>"<sup class="ref"><a href="#r2">[2]</a></sup>，创始人亦在电话会中承认原定 3 月的售票计划延后、全年 6 亿元收入指引被撤回<sup class="ref"><a href="#r10">[10]</a></sup>。结论应表述为<b>"商业试运行 / 内部试运营"，而非"已规模化公开售票"</b>。</div>
+
+  <p>与上一案例（小鹏汇天 X3-F）对照：X3-F 是<b>"参数先行、适航未定"</b>；EH216-S 是<b>"适航先行、商业未定"</b>。两者恰好构成低空产业两条典型风险曲线的样本。</p>
+</section>
+
+<section id="method">
+  <div class="h2wrap"><h2><span class="idx">01</span><span>研究设计与证据边界<span class="en">Research Design &amp; Evidence Boundaries</span></span></h2></div>
+  <p>沿用课程案例的研究范式：<b>先界定证据边界，再下判断</b>。证据窗口统一截至 <b>2026-11-25</b>。所有数字均标注来源等级，Prevent 把营销表述当作事实。</p>
+
+  <h3>1.1 证据分级</h3>
+  <table>
+    <thead><tr><th>等级</th><th>含义</th><th>使用方式</th><th>本案例示例</th></tr></thead>
+    <tbody>
+      <tr><td><span class="ev ev-o">官方</span></td><td>企业官网 / 产品页 / 新闻稿</td><td>可作为产品定义与技术声明依据，但需视为"自称"</td><td>官网参数：620 kg、30 km、130 km/h</td></tr>
+      <tr><td><span class="ev ev-f">财报</span></td><td>SEC 申报 / 季报 / 电话会</td><td>可作为经营事实的高可信依据</td><td>Q1 交付 4 架、收入 2570 万元</td></tr>
+      <tr><td><span class="ev ev-s">标准</span></td><td>民航局规章 / 专用条件 / 咨询通告</td><td>可作为制度事实依据</td><td>《EH216-S 专用条件》(2022.02)</td></tr>
+      <tr><td><span class="ev ev-m">媒体</span></td><td>主流媒体报道</td><td>交叉验证后使用，注意转述层级</td><td>新华财经 TC 颁发报道</td></tr>
+      <tr><td><span class="ev ev-c">存疑</span></td><td>口径冲突 / 聚合站 / 网传</td><td>仅作为待核线索，不作为结论</td><td>650 kg、299 元票价、商业运营日期</td></tr>
+      <tr><td><span class="ev ev-d">本文</span></td><td>基于公开数据的推算或判断</td><td>必须列出假设，标明数量级</td><td>悬停功率、单机年收入敏感性</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.2 冲突登记表（Evidence Conflict Register）</h3>
+  <table>
+    <thead><tr><th>议题</th><th>说法 A</th><th>说法 B</th><th>本文处理</th></tr></thead>
+    <tbody>
+      <tr><td>最大起飞重量</td><td>620 kg <span class="ev ev-o">官方</span></td><td>650 kg <span class="ev ev-m">媒体</span></td><td>以官网 620 kg 为主，注明 650 kg 为另一构型/口径</td></tr>
+      <tr><td>机身长度</td><td>长 5.73 m / 宽 5.73 m <span class="ev ev-o">官方</span></td><td>长 6.05 m <span class="ev ev-m">媒体</span></td><td>官方只给"高 1.93 m / 宽 5.73 m"，长度不强引用</td></tr>
+      <tr><td>AC 颁发时间</td><td>2023-12-21 <span class="ev ev-m">媒体</span></td><td>2025-03 <span class="ev ev-m">第三方</span></td><td>采用 2023-12-21；2025-03 是 OC 颁发月，疑为混淆</td></tr>
+      <tr><td>商业运营状态</td><td>2026-03 启动公众商运 <span class="ev ev-c">存疑</span></td><td>售票审批延后、仍在内部试运营 <span class="ev ev-f">财报</span></td><td>采信财报口径，称"商业试运行"</td></tr>
+      <tr><td>单机售价</td><td>2024 年电商上架 239 万元 <span class="ev ev-m">媒体</span></td><td>2026 年无官方现行报价 <span class="ev ev-m">第三方</span></td><td>239 万仅作历史挂牌价，不作现价</td></tr>
+      <tr><td>低空经济规模</td><td>2026 年 1.0645 万亿元 <span class="ev ev-m">赛迪</span></td><td>2025 年 1.5 万亿元 <span class="ev ev-m">民航局</span></td><td>口径不同（核心产业 vs 广义带动），不可混用</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.3 研究方法链</h3>
+  <p><span class="tag">文献与官网交叉核验</span><span class="tag">参数口径比对</span><span class="tag">物理量级校核</span><span class="tag">适航制度链拆解</span><span class="tag">场景加权评分</span><span class="tag">财务与单位经济性分析</span><span class="tag">竞品矩阵</span><span class="tag">敏感性分析</span></p>
+  <div class="claim warn"><b>概念澄清：</b>"飞行汽车"在课程语境中常泛指低空载人飞行器。严格按构型分类，EH216-S 属于<b>多旋翼 eVTOL</b>，无陆行驶能力、无车内驾驶位；把 X3-F（陆空分体）与 EH216-S（纯飞行器）并列比较时，必须说明二者不是同一产品定义。</div>
+</section>
+
+<section id="timeline">
+  <div class="h2wrap"><h2><span class="idx">02</span><span>发展时间线<span class="en">Development Timeline</span></span></h2></div>
+  <figure>
+    <svg viewBox="0 0 1080 420" role="img" aria-label="EH216-S 2013 至 2026 发展时间线">
+      <rect width="1080" height="420" fill="#fff"/>
+      <text x="24" y="28" font-family="monospace" font-size="11" fill="#48626d">FIG. 1 / EH216-S MILESTONES (2013—2026)</text>
+      <line x1="60" y1="210" x2="1040" y2="210" stroke="#125e78" stroke-width="2"/>
+      <g font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#17212b">
+        <g><circle cx="90" cy="210" r="5" fill="#125e78"/><text x="90" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#125e78">2013</text><text x="90" y="240" text-anchor="middle">概念设计</text></g>
+        <g><circle cx="180" cy="210" r="5" fill="#125e78"/><text x="180" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#125e78">2016</text><text x="180" y="240" text-anchor="middle">EH184 亮相 CES</text></g>
+        <g><circle cx="270" cy="210" r="5" fill="#125e78"/><text x="270" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#125e78">2018</text><text x="270" y="240" text-anchor="middle">首次公开载人飞行</text></g>
+        <g><circle cx="360" cy="210" r="5" fill="#125e78"/><text x="360" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#125e78">2020.12</text><text x="360" y="240" text-anchor="middle">提交 TC 申请</text></g>
+        <g><circle cx="450" cy="210" r="5" fill="#125e78"/><text x="450" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#125e78">2022.02</text><text x="450" y="240" text-anchor="middle">专用条件发布</text></g>
+        <g><circle cx="540" cy="210" r="6" fill="#147a53"/><text x="540" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#147a53">2023.10</text><text x="540" y="240" text-anchor="middle" font-weight="700">TC 取证</text></g>
+        <g><circle cx="630" cy="210" r="6" fill="#147a53"/><text x="630" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#147a53">2023.12</text><text x="630" y="240" text-anchor="middle">AC 取证</text></g>
+        <g><circle cx="720" cy="210" r="6" fill="#147a53"/><text x="720" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#147a53">2024.04</text><text x="720" y="240" text-anchor="middle">PC 取证</text></g>
+        <g><circle cx="810" cy="210" r="6" fill="#147a53"/><text x="810" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#147a53">2025.03</text><text x="810" y="240" text-anchor="middle">OC 取证</text></g>
+        <g><circle cx="900" cy="210" r="6" fill="#b45309"/><text x="900" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#b45309">2025—26</text><text x="900" y="240" text-anchor="middle">试运营 / 9 万架次</text></g>
+        <g><circle cx="1000" cy="210" r="6" fill="#a93a3a"/><text x="1000" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#a93a3a">2026 Q2</text><text x="1000" y="240" text-anchor="middle">指引撤回</text></g>
+        <g font-size="9.5" fill="#3d4c5a">
+          <text x="540" y="290" text-anchor="middle">全球首张载人无人 eVTOL 型号合格证</text>
+          <text x="720" y="290" text-anchor="middle">进入批量生产阶段</text>
+          <text x="810" y="290" text-anchor="middle">运营主体：亿航通航 / 合翼航空</text>
+          <text x="900" y="320" text-anchor="middle">合肥累计 5000+ 架次；跨琼州海峡 22 km / 18 min</text>
+          <text x="1000" y="350" text-anchor="middle">公开售票审批延后</text>
+          <text x="60" y="380" font-family="monospace" font-size="9" fill="#48626d">绿=取的证照　橙=运营验证　红=商业化受挫</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption>图 1 · 时间线依据亿航新闻稿、新华财经、证券时报与财报综合整理 <sup class="ref"><a href="#r1">[1]</a></sup><sup class="ref"><a href="#r4">[4]</a></sup><sup class="ref"><a href="#r10">[10]</a></sup><sup class="ref"><a href="#r17">[17]</a></sup>。</figcaption>
+  </figure>
+  <p class="small">补充：2026 年 8 月 EH216-S 在香港数码港完成公开首飞；同年 11 月合肥运营的机型出现在 APEC 东道主城市宣传片中；海外以泰国、斯里兰卡、越南、马来西亚的沙盒运行为主，均需当地监管批准，<b>不等于中国型号证自动获得国际认可</b> <sup class="ref"><a href="#r8">[8]</a></sup><sup class="ref"><a href="#r7">[7]</a></sup>。</p>
+</section>
+
+<section id="product">
+  <div class="h2wrap"><h2><span class="idx">03</span><span>产品定义与参数<span class="en">Product Definition &amp; Specifications</span></span></h2></div>
+  <p>EH216-S 的产品定义可以概括为：<b>取消飞行员、保留乘客、以地面指挥调度系统替代驾驶舱</b>的 2 座多旋翼飞行器。它的目标不是替代汽车，而是替代短途直升机观光与小型直升机接驳。</p>
+  <table>
+    <thead><tr><th>参数</th><th>数值</th><th>来源与口径</th><th>工程含义</th></tr></thead>
+    <tbody>
+      <tr><td>构型</td><td>8 轴 16 旋翼，同轴双旋翼</td><td><span class="ev ev-o">官方</span><sup class="ref"><a href="#r1">[1]</a></sup></td><td>无尾桨、无传动轴；靠转速差控制姿态，机械简单但旋翼效率低</td></tr>
+      <tr><td>尺寸</td><td>高 1.93 m / 宽 5.73 m</td><td><span class="ev ev-o">官方</span><sup class="ref"><a href="#r1">[1]</a></sup></td><td>占地接近小型直升机，需专用起降点</td></tr>
+      <tr><td>最大起飞重量</td><td>620 kg（另有 650 kg 说法）</td><td><span class="ev ev-o">官方</span> / <span class="ev ev-c">冲突</span></td><td>决定悬停功率与电池质量预算</td></tr>
+      <tr><td>载员</td><td>2 人</td><td><span class="ev ev-o">官方</span></td><td>无驾驶员位；载荷中需扣除乘客约 140—160 kg</td></tr>
+      <tr><td>最大设计速度</td><td>130 km/h</td><td><span class="ev ev-o">官方</span></td><td>多旋翼阻力大，速度提升边际收益低</td></tr>
+      <tr><td>设计航程</td><td>30 km</td><td><span class="ev ev-o">官方</span></td><td>约等于 14 min 全速飞行，实际观光多为 A 点往返 A 点</td></tr>
+      <tr><td>续航时间</td><td>约 25 min</td><td><span class="ev ev-m">媒体</span><sup class="ref"><a href="#r6">[6]</a></sup></td><td>含 reserves；与 30 km 航程口径并不完全等价</td></tr>
+      <tr><td>充电时间</td><td>约 120 min</td><td><span class="ev ev-m">媒体</span><sup class="ref"><a href="#r6">[6]</a></sup></td><td>是日利用率的主要瓶颈；公司已开发电池冷却车缩短周转</td></tr>
+      <tr><td>结构</td><td>碳纤维复合材料、滑橇式起落架、鸥翼门</td><td><span class="ev ev-o">官方</span><sup class="ref"><a href="#r1">[1]</a></sup></td><td>轻量化与维护成本之间的折中</td></tr>
+      <tr><td>安全设计</td><td>飞控/传感器/动力/电池多备份、Fail-Safe、加密通信、地面指挥中心</td><td><span class="ev ev-o">官方</span><sup class="ref"><a href="#r1">[1]</a></sup></td><td>"全冗余 + 无人"是取证路径的核心逻辑</td></tr>
+      <tr><td>电池升级</td><td>固态电池测试机续航 48 min 10 s，计划 2026 量产</td><td><span class="ev ev-c">媒体转述公司计划</span><sup class="ref"><a href="#r23">[23]</a></sup></td><td>若兑现可显著改善周转，但量产状态未在财报证实</td></tr>
+      <tr><td>历史挂牌价</td><td>239 万元/架（2024-03 电商）</td><td><span class="ev ev-m">媒体</span><sup class="ref"><a href="#r13">[13]</a></sup></td><td>仅为历史挂牌价，不含空域/培训/基建/保险</td></tr>
+    </tbody>
+  </table>
+  <div class="claim"><b>产品定义的本质：</b>EH216-S 把"驾驶员"从机上去掉，换来的是<b>重量与空间留给乘客和电池</b>，但同时也把安全责任从人的临场判断转移到了<b>预设航线、地面指挥与冗余系统</b>。这决定了它只能在规则明确、航线预置、环境可控的封闭场景中先落地。</div>
+</section>
+
+<section id="architecture">
+  <div class="h2wrap"><h2><span class="idx">04</span><span>系统架构与关键技术<span class="en">System Architecture &amp; Key Technologies</span></span></h2></div>
+  <figure>
+    <svg viewBox="0 0 1080 470" role="img" aria-label="EH216-S 系统架构图">
+      <rect width="1080" height="470" fill="#fff"/>
+      <text x="24" y="27" font-family="monospace" font-size="11" fill="#48626d">FIG. 2 / EH216-S SYSTEM ARCHITECTURE (PUBLIC-CLAIM RECONSTRUCTION)</text>
+      <g font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#17212b">
+        <rect x="36" y="56" width="1008" height="168" rx="10" fill="#f4f9fa" stroke="#b9d6dd" stroke-width="1"/>
+        <text x="54" y="78" font-family="monospace" font-size="10" fill="#125e78">AIRCRAFT / 机载系统</text>
+        <rect x="56" y="96" width="188" height="52" rx="6" fill="#e7f1f5" stroke="#9cc6d2"/><text x="150" y="117" text-anchor="middle" font-weight="700">飞控计算机</text><text x="150" y="135" text-anchor="middle" font-size="9.5">多套系统 + 投票机制</text>
+        <rect x="272" y="96" width="188" height="52" rx="6" fill="#e7f1f5" stroke="#9cc6d2"/><text x="366" y="117" text-anchor="middle" font-weight="700">感知与导航</text><text x="366" y="135" text-anchor="middle" font-size="9.5">GNSS + 惯导 + 多传感器</text>
+        <rect x="488" y="96" width="188" height="52" rx="6" fill="#e7f1f5" stroke="#9cc6d2"/><text x="582" y="117" text-anchor="middle" font-weight="700">分布式电推进</text><text x="582" y="135" text-anchor="middle" font-size="9.5">8 轴 16 旋翼 + 多备份</text>
+        <rect x="704" y="96" width="148" height="52" rx="6" fill="#e7f1f5" stroke="#9cc6d2"/><text x="778" y="117" text-anchor="middle" font-weight="700">电池与热管理</text><text x="778" y="135" text-anchor="middle" font-size="9.5">智能电池 / 冷却</text>
+        <rect x="880" y="96" width="140" height="52" rx="6" fill="#fdf2e5" stroke="#dfb887"/><text x="950" y="117" text-anchor="middle" font-weight="700">Fail-Safe</text><text x="950" y="135" text-anchor="middle" font-size="9.5">健康监测与应急决策</text>
+        <rect x="56" y="168" width="620" height="36" rx="6" fill="#fff" stroke="#dbe4e9"/><text x="366" y="191" text-anchor="middle" font-size="10.5">碳纤维机体 / 滑橇起落架 / 2 座座舱 / 鸥翼门</text>
+        <rect x="704" y="168" width="316" height="36" rx="6" fill="#fff" stroke="#dbe4e9"/><text x="862" y="191" text-anchor="middle" font-size="10.5">加密通信链路（独立密钥）</text>
+        <path d="M150 148 L150 168 M366 148 L366 168 M582 148 L582 168 M778 148 L778 168 M950 148 L950 204 M862 204 L862 148" stroke="#7fa9b5" stroke-width="1" fill="none"/>
+        <path d="M96 224 L96 268 M366 224 L366 268 M640 224 L640 268 M920 224 L920 268" stroke="#125e78" stroke-width="1.6"/>
+        <rect x="36" y="268" width="1008" height="104" rx="10" fill="#f7fafc" stroke="#b9d6dd" stroke-width="1"/>
+        <text x="54" y="290" font-family="monospace" font-size="10" fill="#125e78">GROUND / 地面与运行体系</text>
+        <rect x="56" y="304" width="228" height="50" rx="6" fill="#eaf1fb" stroke="#b3c9e6"/><text x="170" y="325" text-anchor="middle" font-weight="700">指挥调度中心</text><text x="170" y="343" text-anchor="middle" font-size="9.5">监控 / 调度 / 预警 / 集群管理</text>
+        <rect x="310" y="304" width="228" height="50" rx="6" fill="#eaf1fb" stroke="#b3c9e6"/><text x="424" y="325" text-anchor="middle" font-weight="700">远程机组与培训</text><text x="424" y="343" text-anchor="middle" font-size="9.5">大型无人机驾驶员要求（2026.05）</text>
+        <rect x="564" y="304" width="228" height="50" rx="6" fill="#eaf1fb" stroke="#b3c9e6"/><text x="678" y="325" text-anchor="middle" font-weight="700">地面基础设施</text><text x="678" y="343" text-anchor="middle" font-size="9.5">起降点 / 充电 / 电池冷却车</text>
+        <rect x="818" y="304" width="206" height="50" rx="6" fill="#eaf1fb" stroke="#b3c9e6"/><text x="921" y="325" text-anchor="middle" font-weight="700">空域与航线审批</text><text x="921" y="343" text-anchor="middle" font-size="9.5">隔离空域 / 昼间 / 视距内</text>
+        <path d="M540 372 L540 400" stroke="#b45309" stroke-width="1.6"/>
+        <rect x="330" y="400" width="420" height="46" rx="8" fill="#fdf2e5" stroke="#dfb887"/><text x="540" y="420" text-anchor="middle" font-weight="700" fill="#8a4b08">乘客服务：票务 / 客服 / 保险 / 应急</text><text x="540" y="438" text-anchor="middle" font-size="9.5" fill="#8a4b08">— 取证完成，规模化尚未验证 —</text>
+      </g>
+    </svg>
+    <figcaption>图 2 · 依据官网技术描述与财报运营披露重建；图中"多套系统 + 投票机制""独立密钥"等为企业公开声明，<b>未公开到架构细节层级</b> <sup class="ref"><a href="#r1">[1]</a></sup><sup class="ref"><a href="#r2">[2]</a></sup>。</figcaption>
+  </figure>
+
+  <h3>4.1 三项关键技术的工程解读</h3>
+  <div class="grid3">
+    <div class="card tight"><h4>① 全冗余分布式电推进</h4><p style="font-size:13.5px">16 个旋翼与飞控等关键部件多备份。优势是<b>单点失效不致命</b>；代价是旋翼间气动干扰与悬停效率低于直升机旋翼，且故障检测/隔离逻辑复杂度随通道数上升。<span class="ev ev-o">官方</span></p></div>
+    <div class="card tight"><h4>② 无人驾驶 + 集群调度</h4><p style="font-size:13.5px">预设航线、GNSS 定位、地面指挥中心实时监控与干预。取消驾驶员使重量与舱内空间更优，但<b>通信链路、导航欺骗与地面系统失效</b>成为新的系统性风险点。<span class="ev ev-o">官方</span></p></div>
+    <div class="card tight"><h4>③ 碳纤维结构与热管理</h4><p style="font-size:13.5px">预浸料铺贴 + 热压罐固化，零件独立编号可追溯；高温环境下开发专用电池冷却车与独立座舱空调。<b>材料工艺一致性</b>是量产物控的关键。<span class="ev ev-m">媒体实地</span><sup class="ref"><a href="#r12">[12]</a></sup></p></div>
+  </div>
+  <div class="claim warn"><b>证据边界：</b>官网给出的是<b>能力层描述</b>（"多备份""Fail-Safe""加密通信"），并未公开 DAL 等级、失效概率目标、共因失效分析或软件验证证据。因此本文只能判定"设计原则合理"，不能判定"安全指标已量化满足"——后者属于上一份安全工程作业的范畴。</div>
+</section>
+
+<section id="feasibility">
+  <div class="h2wrap"><h2><span class="idx">05</span><span>技术可行性校核<span class="en">Technical Feasibility Check</span></span></h2></div>
+  <p>为避免只复述宣传参数，本节用公开参数做<b>数量级校核</b>：检查"620 kg / 16 旋翼 / 25 min"这组数字在物理上是否自洽。假设均显式列出，结论只到数量级。</p>
+
+  <h3>5.1 悬停功率与能量预算</h3>
+  <div class="formula">T = m·g ≈ 620 × 9.81 ≈ 6.08 kN<br>
+A = 16 × π(D/2)² ，取 D ≈ 1.0 m → A ≈ 12.6 m²（假设）<br>
+P_ideal = T^1.5 / √(2ρA) ，ρ = 1.225 kg/m³ → ≈ 85 kW<br>
+P_elec ≈ P_ideal / FM ，取悬停效率 FM ≈ 0.70（假设） → ≈ 122 kW<br>
+E_25min ≈ 122 kW × 0.417 h ≈ 51 kWh</div>
+  <p class="small"><span class="ev ev-d">本文估算</span>：旋翼直径与 FM 为假设值，未在官方资料中披露。若 D = 1.2 m，则 P ≈ 101 kW、E ≈ 42 kWh。两种假设都落在"几十 kWh 级电池"的合理区间。</p>
+  <div class="claim good"><b>校核结论：</b>50 kWh 级电池对应约 250—300 kg 电池质量（按包级 180—200 Wh/kg 估算），在 620 kg MTOW 中占比约 40%——<b>与 2 座、30 km 航程的产品定位自洽</b>。这组数字没有明显物理矛盾。</div>
+
+  <h3>5.2 "航程—航时—速度"三角</h3>
+  <table>
+    <thead><tr><th>指标</th><th>数值</th><th>推导</th><th>解读</th></tr></thead>
+    <tbody>
+      <tr><td>最大速度</td><td class="n">130 km/h</td><td>官方设计值</td><td>若全程全速，25 min 可覆盖约 54 km</td></tr>
+      <tr><td>设计航程</td><td class="n">30 km</td><td>官方设计值</td><td>约为全速理论值 56%，说明留有储备或按巡游/观光剖面定义</td></tr>
+      <tr><td>续航</td><td class="n">约 25 min</td><td>媒体口径</td><td>典型观光体验仅 3—5 min，周转时间远大于飞行时间</td></tr>
+      <tr><td>充电</td><td class="n">约 120 min</td><td>媒体口径</td><td><b>充电时间是飞行时间的约 5 倍</b>，是多机轮换才能成立的前提</td></tr>
+      <tr><td>固态电池试验</td><td class="n">48 min 10 s</td><td>公司宣称 <span class="ev ev-c">待量产证实</span></td><td>若量产可把周转比从 5:1 降到约 2.5:1，是利用率的关键变量</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.3 环境与运行边界</h3>
+  <ul>
+    <li><b>低温：</b>2021 年 2 月在北京雁栖湖 −14 ℃ 完成 5 架次无人试飞；官方据此主张极端环境适应性，但<b>低温对电池容量与复合材料的影响曲线未公开</b> <sup class="ref"><a href="#r16">[16]</a></sup>。</li>
+    <li><b>跨水域：</b>2025 年 12 月完成琼州海峡 22 km 点对点飞行、用时 18 min；但现阶段商业运行<b>暂不支持水上起降</b>，说明演示能力与运营许可并不等价 <sup class="ref"><a href="#r23">[23]</a></sup>。</li>
+    <li><b>噪声与城市接受度：</b>多旋翼在悬停与低速阶段噪声显著；EH216-S 的噪声实测数据未在官网披露。城市中心运行需额外论证，不宜用景区数据外推。</li>
+    <li><b>热管理：</b>公司专门为高温环境开发电池冷却车并增加独立座舱空调，反向印证<b>热带/夏季高频运行</b>是真实工程约束 <sup class="ref"><a href="#r2">[2]</a></sup>。</li>
+  </ul>
+  <div class="claim"><b>技术可行性结论：</b>在"封闭空域、预设航线、昼间、短距离、多机轮换"的约束下，EH216-S 的技术是<b>可行的且已被取证与使用数据部分验证</b>；在"高密度城市通勤、全天候、长航程"的约束下，多旋翼构型存在<b>结构性上限</b>，不是靠软件迭代能突破的。</div>
+</section>
+
+<section id="safety">
+  <div class="h2wrap"><h2><span class="idx">06</span><span>安全与适航证据<span class="en">Safety &amp; Airworthiness Evidence</span></span></h2></div>
+  <p>适航是 EH216-S 最强的证据区。但"四证齐全"四个字经常被误读，因此先拆成四道独立的门：</p>
+  <figure>
+    <svg viewBox="0 0 1080 300" role="img" aria-label="TC PC AC OC 四证递进关系">
+      <rect width="1080" height="300" fill="#fff"/>
+      <text x="24" y="26" font-family="monospace" font-size="11" fill="#48626d">FIG. 3 / FOUR CERTIFICATES, FOUR DIFFERENT QUESTIONS</text>
+      <g font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#17212b">
+        <rect x="34" y="58" width="238" height="124" rx="8" fill="#e7f1f5" stroke="#9cc6d2"/><text x="153" y="84" text-anchor="middle" font-family="monospace" font-size="15" font-weight="700" fill="#125e78">TC</text><text x="153" y="108" text-anchor="middle" font-weight="700">型号合格证</text><text x="153" y="132" text-anchor="middle" font-size="10">回答：设计是否安全？</text><text x="153" y="158" text-anchor="middle" font-size="10" fill="#48626d">2023-10-13</text>
+        <rect x="298" y="58" width="238" height="124" rx="8" fill="#e7f1f5" stroke="#9cc6d2"/><text x="417" y="84" text-anchor="middle" font-family="monospace" font-size="15" font-weight="700" fill="#125e78">AC</text><text x="417" y="108" text-anchor="middle" font-weight="700">标准适航证</text><text x="417" y="132" text-anchor="middle" font-size="10">回答：这架飞机能否飞？</text><text x="417" y="158" text-anchor="middle" font-size="10" fill="#48626d">2023-12-21</text>
+        <rect x="562" y="58" width="238" height="124" rx="8" fill="#e7f1f5" stroke="#9cc6d2"/><text x="681" y="84" text-anchor="middle" font-family="monospace" font-size="15" font-weight="700" fill="#125e78">PC</text><text x="681" y="108" text-anchor="middle" font-weight="700">生产许可证</text><text x="681" y="132" text-anchor="middle" font-size="10">回答：工厂能否稳定造？</text><text x="681" y="158" text-anchor="middle" font-size="10" fill="#48626d">2024-04-07</text>
+        <rect x="826" y="58" width="220" height="124" rx="8" fill="#fdf2e5" stroke="#dfb887"/><text x="936" y="84" text-anchor="middle" font-family="monospace" font-size="15" font-weight="700" fill="#b45309">OC</text><text x="936" y="108" text-anchor="middle" font-weight="700">运营合格证</text><text x="936" y="132" text-anchor="middle" font-size="10">回答：能否载人卖票？</text><text x="936" y="158" text-anchor="middle" font-size="10" fill="#8a4b08">2025-03-28</text>
+        <path d="M272 120 L298 120 M536 120 L562 120 M800 120 L826 120" stroke="#125e78" stroke-width="2"/>
+        <text x="34" y="222" font-size="10.5" fill="#3d4c5a">取证基础：2022-02 民航局发布《亿航 EH216-S 型无人驾驶航空器系统专用条件》，解决"无既有类别可套"的问题。</text>
+        <text x="34" y="248" font-size="10.5" fill="#3d4c5a">验证规模：500+ 专项试验、4 万+ 架次调整试飞、65 大类 / 450+ 项符合性验证试验。</text>
+        <text x="34" y="274" font-size="10.5" fill="#a93a3a">注意：OC 只是运营资质，不自动等于"任意城市、任意航线、任意时刻可公开售票"。</text>
+      </g>
+    </svg>
+    <figcaption>图 3 · 四证含义与日期依据新华财经、亿航 SEC 申报与百科条目交叉整理；OC 颁发主体为广东亿航通用航空与合肥合翼航空 <sup class="ref"><a href="#r4">[4]</a></sup><sup class="ref"><a href="#r3">[3]</a></sup><sup class="ref"><a href="#r6">[6]</a></sup>。</figcaption>
+  </figure>
+
+  <h3>6.1 安全证据盘点</h3>
+  <table>
+    <thead><tr><th>证据类型</th><th>公开数据</th><th>可信度</th><th>边界说明</th></tr></thead>
+    <tbody>
+      <tr><td>设计验证</td><td>500+ 专项试验、4 万+ 架次调整试飞、65 大类 / 450+ 符合性项目</td><td><span class="ev ev-f">财报</span></td><td>覆盖材料、强度、阻燃、抗坠毁、气体毒性、EMC、软件、数据链、地面站</td></tr>
+      <tr><td>累计飞行</td><td>2024-03 约 4.7 万架次；2026-05 超 9 万架次；合肥本地 5000+ 架次</td><td><span class="ev ev-f">财报</span><span class="ev ev-m">媒体</span></td><td><b>含测试、演示、培训、试运营</b>；不等于 9 万次付费载客</td></tr>
+      <tr><td>运营主体记录</td><td>两家 OC 持证方自 2025-03 起 3000+ 任务、零事故零违章</td><td><span class="ev ev-f">财报</span></td><td>公司自述，未见独立事故数据库交叉核验</td></tr>
+      <tr><td>载人飞行</td><td>OC 主体完成载人飞行 434 架次（媒体转述）</td><td><span class="ev ev-m">媒体</span></td><td>需与"售票飞行"区分</td></tr>
+      <tr><td>运行限制</td><td>隔离空域、昼间、避开恶劣气象、远程机组视线范围内、暂不支持水上起降</td><td><span class="ev ev-m">媒体</span><sup class="ref"><a href="#r23">[23]</a></sup></td><td>这些限制本身就是安全边际的一部分，不能省略后谈“城市通勤”</td></tr>
+    </tbody>
+  </table>
+  <div class="claim good"><b>安全结论：</b>EH216-S 在<b>取证证据的系统性</b>上明显强于绝大多数 eVTOL 同行——它不是"飞了很多次所以安全"，而是"按专用条件逐项证明所以可审"。但仍需看到：安全声明主要来自企业与运营方自述，<b>公开的量化安全目标（失效概率、DAL、共因分析）不足</b>，运行限制也说明其安全边界仍在保守区间。</div>
+</section>
+
+<section id="scenarios">
+  <div class="h2wrap"><h2><span class="idx">07</span><span>应用场景矩阵<span class="en">Application Scenario Matrix</span></span></h2></div>
+  <p>评分维度：<b>技术匹配度 / 证照适配度 / 需求真实性 / 单位经济性 / 近期可落地性</b>，各 1—5 分。总分为本文判断，不来自企业口径。</p>
+  <table>
+    <thead><tr><th>场景</th><th>技术匹配</th><th>证照适配</th><th>需求真实</th><th>单位经济</th><th>近期落地</th><th>综合</th><th>关键约束</th></tr></thead>
+    <tbody>
+      <tr><td><b>景区 / 园区观光</b></td><td class="n">5</td><td class="n">5</td><td class="n">4</td><td class="n">3</td><td class="n">5</td><td><span class="stars">★★★★★</span></td><td>A 点往返 A 点、3—5 min；票量与周转决定盈亏</td></tr>
+      <tr><td><b>城市短途观光</b></td><td class="n">4</td><td class="n">3</td><td class="n">4</td><td class="n">3</td><td class="n">3</td><td><span class="stars">★★★★</span></td><td>上海龙华机场首飞与试运行；需城市空域与噪声接受度</td></tr>
+      <tr><td><b>警务巡逻 / 应急侦察</b></td><td class="n">4</td><td class="n">4</td><td class="n">3</td><td class="n">2</td><td class="n">4</td><td><span class="stars">★★★★</span></td><td>黄埔公安 2026-01 列装；预算采购而非市场收入</td></tr>
+      <tr><td><b>跨水域接驳</b></td><td class="n">3</td><td class="n">2</td><td class="n">4</td><td class="n">2</td><td class="n">2</td><td><span class="stars">★★★</span></td><td>琼州海峡 22 km 演示成功，但商运暂不支持水上起降</td></tr>
+      <tr><td><b>医疗急救 / 物资运输</b></td><td class="n">3</td><td class="n">3</td><td class="n">4</td><td class="n">2</td><td class="n">2</td><td><span class="stars">★★★</span></td><td>2 座载荷有限；货运机型（如 V2000CG）更匹配</td></tr>
+      <tr><td><b>城市通勤 / 空中出租车</b></td><td class="n">2</td><td class="n">2</td><td class="n">5</td><td class="n">1</td><td class="n">1</td><td><span class="stars">★★</span></td><td>30 km 航程 + 120 min 充电 + 航线审批，尚不构成通勤网络</td></tr>
+      <tr><td><b>城际出行</b></td><td class="n">1</td><td class="n">1</td><td class="n">3</td><td class="n">1</td><td class="n">1</td><td><span class="stars">★</span></td><td>构型性不匹配；应由复合翼/倾转旋翼承担</td></tr>
+    </tbody>
+  </table>
+  <div class="claim"><b>场景结论：</b>EH216-S 的近期价值在<b>"低空文旅 + 封闭园区体验 + 政企采购"</b>，而非"空中出租车"。这与上一案例 X3-F 的"高端个人玩具"定位不同：前者是<b>运营端产品</b>（卖给运营商），后者是<b>消费端产品</b>（卖给个人）。</div>
+</section>
+
+<section id="market">
+  <div class="h2wrap"><h2><span class="idx">08</span><span>市场可行性<span class="en">Market Feasibility</span></span></h2></div>
+  <h3>8.1 经营事实（财报口径）</h3>
+  <table>
+    <thead><tr><th>期间</th><th>交付</th><th>营业收入</th><th>净亏损</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td>2023 全年</td><td>52 架 EH216 系列</td><td class="n">1.174 亿元</td><td class="n">3.023 亿元</td><td>累计交付 237 架（含各型号）<sup class="ref"><a href="#r3">[3]</a></sup></td></tr>
+      <tr><td>2025 全年</td><td>169 架 EH216 系列 + 6 架 VT35</td><td class="n">4.180 亿元</td><td class="n">2.764 亿元</td><td>应收账款由 5800 万升至 1.12 亿元 <span class="ev ev-m">第三方分析</span></td></tr>
+      <tr><td>2025 Q4</td><td>61 架 EH216 + 5 架 VT35</td><td class="n">1.776 亿元</td><td class="n">0.209 亿元</td><td>单季冲量明显</td></tr>
+      <tr><td>2026 Q1</td><td>4 架 EH216 系列</td><td class="n">0.257 亿元</td><td class="n">1.264 亿元</td><td>空中媒体业务贡献约 40% 收入<sup class="ref"><a href="#r2">[2]</a></sup></td></tr>
+      <tr><td>2026 Q2</td><td>36 架（媒体口径）</td><td class="n">0.779 亿元</td><td>—</td><td>环比 +203%，同比仍下滑；上半年仅完成年目标 17.3%</td></tr>
+    </tbody>
+  </table>
+  <p class="small">数据来源：亿航 SEC 申报与 2026 Q1 财报 <sup class="ref"><a href="#r3">[3]</a></sup><sup class="ref"><a href="#r2">[2]</a></sup>，2025 与 Q2 数据来自第三方汇总 <sup class="ref"><a href="#r9">[9]</a></sup><sup class="ref"><a href="#r11">[11]</a></sup>。截至 2026-03-31，公司现金及等价物等合计约 10.3 亿元人民币。</p>
+
+  <div class="claim bad"><b>关键市场信号：</b>公司撤回了 2026 年全年 <b>6 亿元收入指引</b>且未给出替代数字，理由是与公众载人运营相关的监管和配套机制仍在完善<sup class="ref"><a href="#r10">[10]</a></sup>。这比任何订单数字都更能说明：<b>瓶颈已经从"造不造得出来"转移到"批不批得下来、赚不赚得到钱"</b>。</div>
+
+  <h3>8.2 单机经济性敏感性（本文估算）</h3>
+  <p>假设：票价 <b>299 元/人次</b>（网传，<span class="ev ev-c">存疑</span>）、2 座、每年 250 个可飞日、每次飞行 5 min。收入 = 日架次 × 250 × 2 × 上座率 × 299。成本基准引用第三方测算：电池折旧约 <b>47 万元/年</b>、维护约 <b>12 万元/年</b>，合计约 <b>59 万元/年</b>（未含购机、保险、人力、场地）<sup class="ref"><a href="#r11">[11]</a></sup>。</p>
+  <table>
+    <thead><tr><th>日架次 ＼ 上座率</th><th>60%</th><th>82%</th><th>100%</th></tr></thead>
+    <tbody>
+      <tr><td><b>2 架次/日</b></td><td class="n">17.9 万</td><td class="n">24.5 万</td><td class="n">29.9 万</td></tr>
+      <tr><td><b>5 架次/日</b></td><td class="n">44.9 万</td><td class="n" style="background:var(--warn-soft)">61.3 万</td><td class="n" style="background:var(--good-soft)">74.8 万</td></tr>
+      <tr><td><b>8 架次/日</b></td><td class="n" style="background:var(--warn-soft)">71.8 万</td><td class="n" style="background:var(--good-soft)">98.2 万</td><td class="n" style="background:var(--good-soft)">119.6 万</td></tr>
+    </tbody>
+  </table>
+  <p class="small"><span class="ev ev-d">本文估算</span>。绿色 = 高于 59 万元/年直接运营成本；黄色 = 勉强覆盖。即使在 5 架次/日、82% 上座率的较优情形，年票收 61.3 万元也<b>仅够覆盖电池折旧与维护</b>，尚未计入 200 万级购机成本、保险、远程机组与场地。这解释了为什么"能飞"与"能赚钱"之间存在结构性鸿沟。</p>
+
+  <h3>8.3 宏观市场口径</h3>
+  <table>
+    <thead><tr><th>口径</th><th>数值</th><th>含义</th><th>使用建议</th></tr></thead>
+    <tbody>
+      <tr><td>赛迪顾问</td><td class="n">2026 年 1.0645 万亿元</td><td>低空核心产业（制造 + 运营 + 直接配套）</td><td>适合讨论产业链投资规模</td></tr>
+      <tr><td>中国民航局</td><td class="n">2025 年 1.5 万亿元；2035 年 3.5 万亿元</td><td>广义经济带动，含传统通航存量</td><td>适合讨论政策目标，不与赛迪直接比较</td></tr>
+      <tr><td>工信部口径</td><td class="n">2026 年 8000 亿元</td><td>中间口径</td><td>引用时必须注明来源</td></tr>
+      <tr><td>eVTOL 细分</td><td class="n">2025 年 57.5 亿元 → 2026 年约 95 亿元</td><td>整机细分市场</td><td><b>与"万亿低空经济"不是一个量级</b>，不应混淆</td></tr>
+    </tbody>
+  </table>
+  <p class="small">来源：赛迪研究院、民航局预测、新华网与第三方口径汇总 <sup class="ref"><a href="#r18">[18]</a></sup><sup class="ref"><a href="#r19">[19]</a></sup><sup class="ref"><a href="#r17">[17]</a></sup>。<b>关键提醒：万亿叙事中的绝大部分并不属于载人 eVTOL。</b></p>
+</section>
+
+<section id="competition">
+  <div class="h2wrap"><h2><span class="idx">09</span><span>竞品比较<span class="en">Competitive Landscape</span></span></h2></div>
+  <table>
+    <thead><tr><th>机型 / 企业</th><th>构型</th><th>座级</th><th>航程 / 速度</th><th>适航状态</th><th>商业阶段</th><th>与 EH216-S 的关键差异</th></tr></thead>
+    <tbody>
+      <tr><td><b>EH216-S</b> / 亿航</td><td>多旋翼 16 旋翼</td><td>2 人（无人）</td><td class="n">30 km / 130 km/h</td><td><b>四证齐全</b></td><td>试运营、9 万+ 架次</td><td>—（本案例）</td></tr>
+      <tr><td><b>S4</b> / Joby</td><td>全倾转旋翼</td><td>1 驾 + 4 客</td><td class="n">约 241 km / 330 km/h</td><td>FAA 第五阶段终段 <span class="ev ev-m">媒体</span></td><td>迪拜首发目标；美国延至 2027</td><td>性能与资本优势大，但尚未取证；有人驾驶路线</td></tr>
+      <tr><td><b>Midnight</b> / Archer</td><td>升力+巡航 / 倾转</td><td>1 驾 + 4 客</td><td class="n">约 160 km / 240 km/h</td><td>FAA Phase 4；阿联酋 RTC 通道</td><td>阿布扎比抢跑</td><td>用中东限制型证书绕过本土进度</td></tr>
+      <tr><td><b>V2000CG</b> / 峰飞</td><td>复合翼（货运）</td><td>2 吨级 / 载货 500 kg</td><td class="n">约 200 km / 200 km/h</td><td>TC/PC/AC 三证 + 印尼 VTC</td><td>海上平台 / 海岛 / 应急常态化</td><td><b>货运先闭环</b>，不载人反而更快挣钱</td></tr>
+      <tr><td><b>AE200</b> / 沃飞长空</td><td>8 轴内 4 倾转</td><td>3—6 座</td><td class="n">约 200 km / 230—280 km/h</td><td>TC 冲刺，目标 2027</td><td>成都基地、文旅走廊</td><td>性能更接近"空中出租车"，但取证未完成</td></tr>
+      <tr><td><b>X3-F</b> / 小鹏汇天</td><td>陆空分体式</td><td>2 人</td><td class="n">未公开</td><td>TC 未取得（上一案例结论）</td><td>预售 7000+，面向个人</td><td>消费属性强，但适航与陆空接口更复杂</td></tr>
+      <tr><td><b>Cora / Gen6</b> / Wisk</td><td>自主多旋翼/倾转</td><td>4 座（无人）</td><td class="n">未公开</td><td>FAA 审定中</td><td>目标 2028 后</td><td>同为无人路线，但周期更长、资本更厚</td></tr>
+    </tbody>
+  </table>
+  <p class="small">竞品数据来自行业汇总与媒体报道，口径与时点不一，仅用于<b>相对定位</b>，不用于精确性能排序 <sup class="ref"><a href="#r20">[20]</a></sup><sup class="ref"><a href="#r21">[21]</a></sup><sup class="ref"><a href="#r22">[22]</a></sup>。</p>
+  <div class="claim"><b>定位判断：</b>EH216-S 的护城河不是性能——它的航程和速度在竞品中垫底——而是<b>"制度性先发 + 已有运营数据 + 可交付产品"</b>的组合。一旦 Joby / AE200 等在 2027 年前后取证，EH216-S 在"性能型场景"的优势会被迅速侵蚀；它必须把文旅与封闭场景的运营效率做到极致。</div>
+</section>
+
+<section id="model">
+  <div class="h2wrap"><h2><span class="idx">10</span><span>商业模式复盘<span class="en">Business Model Review</span></span></h2></div>
+  <h3>10.1 四条收入线</h3>
+  <div class="grid2">
+    <div class="card tight"><h4>① 硬件销售</h4><p style="font-size:13.5px">向地方政府平台、景区、运营商销售整机与指挥系统。2025 年交付 169 架，是收入主力；但客户集中、回款慢，应收账款上升。</p></div>
+    <div class="card tight"><h4>② 运营服务</h4><p style="font-size:13.5px">通过亿航通航、合翼航空两家 OC 主体试运营；目前以内部试飞、演示与受限观光为主，公开售票尚未常态化。</p></div>
+    <div class="card tight"><h4>③ 空中媒体</h4><p style="font-size:13.5px">编队无人机表演。2026 Q1 贡献约 <b>40% 收入</b>，16 架 EH216-S + 22580 架 GD4.0 在央视春晚创纪录。这其实是现金流补充，<b>不是 eVTOL 客运费</b>。</p></div>
+    <div class="card tight"><h4>④ 海外沙盒与解决方案</h4><p style="font-size:13.5px">泰国、斯里兰卡、越南、马来西亚等以沙盒验证、演示和本地伙伴为主；需逐国审批，短期难以贡献规模收入。</p></div>
+  </div>
+
+  <h3>10.2 为什么"订单很多、收入很少"</h3>
+  <ul>
+    <li><b>订单口径不同：</b>意向订单、确认订单、框架协议与已交付收入不是一回事。行业普遍以"意向"造势。</li>
+    <li><b>交付波动大：</b>2025 Q4 交付 66 架、2026 Q1 仅 4 架、Q2 回到 36 架，说明订单具有<b>项目性 / 批量性</b>，而非稳定需求流。</li>
+    <li><b>客户结构：</b>买方多为地方国企与文旅平台，受地方财政与审批节奏影响，回款周期长。</li>
+    <li><b>运营端尚未闭环：</b>没有可复制的公开售票模式，运营商复购就缺乏经济依据。</li>
+  </ul>
+  <div class="claim warn"><b>复盘结论：</b>EH216-S 已经证明"可以造出来、可以取到证、可以飞起来"，但没有证明"运营商买回去能赚钱"。在铁路与航空史上，这类"技术先行、运营滞后"的阶段通常持续数年；把 2026 年称为"商业化元年"是政策叙事，不是财务事实。</div>
+</section>
+
+<section id="gate">
+  <div class="h2wrap"><h2><span class="idx">11</span><span>Go / No-Go 门槛<span class="en">Go / No-Go Criteria</span></span></h2></div>
+  <p>以下为本文提出的<b>可证伪判据</b>：满足则判定场景可规模化，不满足则仍属示范阶段。每条都可直接用未来公开数据检验。</p>
+  <div class="gate go"><span class="mark">G1</span><div><b>公开售票常态化</b>：至少 3 个城市连续 6 个月可对外售票、且无需逐次特批。<span class="ev ev-c">当前未满足</span></div></div>
+  <div class="gate go"><span class="mark">G2</span><div><b>日利用率</b>：单机日均 ≥ 5 架次、年均 ≥ 250 可飞日；按上文模型这是覆盖直接运营成本的下限。<span class="ev ev-c">当前未公开验证</span></div></div>
+  <div class="gate go"><span class="mark">G3</span><div><b>单位经济性转正</b>：票收覆盖电池折旧、维护、保险、远程机组与场地后仍有正贡献，且不依赖地方补贴。<span class="ev ev-c">当前未满足</span></div></div>
+  <div class="gate hold"><span class="mark">G4</span><div><b>运营商多元化</b>：OC 主体从 2 家扩展到 5 家以上、非关联方运营商占比提升。<span class="ev ev-c">进行中</span></div></div>
+  <div class="gate hold"><span class="mark">G5</span><div><b>电池周转改善</b>：固态或快换电池量产，使充电/周转时间从约 120 min 降至 60 min 以内。<span class="ev ev-c">宣称计划，未量产证实</span></div></div>
+  <div class="gate no"><span class="mark">G6</span><div><b>城市高密度运行</b>：噪声、空域、应急与公众接受度通过独立评估；现阶段运行限制（昼间、隔离空域、视距内）不能作为永久前提。<span class="ev ev-c">近期不成立</span></div></div>
+  <div class="gate no"><span class="mark">G7</span><div><b>跨国务实互认</b>：中国 TC 通过 VTC / 双边安排被主要市场直接采信；海外沙盒演示不等于型号认可。<span class="ev ev-c">未满足</span></div></div>
+  <p style="margin-top:18px"><b>总体判定：</b><span class="ev ev-c">Conditional Go</span> — 在<b>低空文旅与封闭园区</b>条件下有条件通过；在<b>城市通勤与规模化盈利</b>条件下 <span class="ev ev-c">No-Go（截至证据窗口）</span>。</p>
+</section>
+
+<section id="limits">
+  <div class="h2wrap"><h2><span class="idx">12</span><span>局限与结论<span class="en">Limitations &amp; Conclusion</span></span></h2></div>
+  <h3>12.1 研究局限</h3>
+  <ul>
+    <li>无法获取适航审定完整符合性报告、DAL 分配与可靠性数据，安全评价只能停留在设计原则与公开验证规模层面。</li>
+    <li>票价 299 元、电池寿命 800—1000 次、固态电池 48 min 等关键经济性参数来自媒体或第三方，未经一手证实。</li>
+    <li>累计 9 万架次为公司口径，未拆分测试 / 演示 / 培训 / 载客比例，不能据此计算事故率。</li>
+    <li>悬停功率校核中的旋翼直径与悬停效率为假设值，仅作数量级检验。</li>
+    <li>竞品取证状态变化极快，截至 2026-11-25 的快照可能在数月内失效。</li>
+  </ul>
+  <h3>12.2 结论</h3>
+  <p class="lead-p">EH216-S 是低空产业一个极具价值的样本：<b>它把"适航"这件事做到了全球第一，却把"商业"这道更难的题留在了原地</b>。技术上，多旋翼 + 无人驾驶的路线在短途观光场景自洽，但有结构性天花板；制度上，四证齐全说明中国已建立起载人无人驾驶 eVTOL 的审定闭环；市场上，交付真实、收入真实、亏损也真实，公众售票与单机盈利尚未被证明。</p>
+  <p>因此，对 EH216-S 的正确评价不是"成功了"或"失败了"，而是：<b>它完成了从产品到合格航空器的惊险一跃，但尚未完成从合格航空器到可持续商业服务的第二跃。</b>下一阶段真正值得跟踪的指标不是订单数，而是<b>公开售票城市数、单机日利用率、非关联运营商数量与单位经济性</b>。</p>
+  <div class="claim good"><b>与上一案例的对照价值：</b>X3-F 的风险在<b>技术/适航未定</b>；EH216-S 的风险在<b>商业/运营未定</b>。两份作业放在一起，恰好构成低空产业"从能不能飞到能不能赚钱"的完整风险谱系。</div>
+</section>
+
+<section id="refs">
+  <div class="h2wrap"><h2><span class="idx">13</span><span>参考文献<span class="en">References</span></span></h2></div>
+  <p class="small">来源等级：<span class="ev ev-o">官方</span> 企业官网/新闻稿　<span class="ev ev-f">财报</span> SEC/季报　<span class="ev ev-m">媒体</span> 新闻报道　<span class="ev ev-c">存疑</span> 聚合/网传　<span class="ev ev-d">本文</span> 推算或判断。所有链接访问于 2026-11-25。</p>
+  <ol>
+    <li id="r1"><b>亿航智能官网 — EH216-S 产品页</b> <span class="src">官方</span> — 尺寸、MTOW、速度、航程、冗余与 Fail-Safe 设计。<a href="https://www.ehang.com/ehang216s/" target="_blank" rel="noopener">链接</a></li>
+    <li id="r2"><b>EHang Reports First Quarter 2026 Unaudited Financial Results</b> <span class="src">财报</span> — 交付 4 架、收入 2570 万元、OC 主体 3000+ 任务、公开售票前提、电池冷却车。<a href="https://ir.ehang.com/news-releases/news-release-details/ehang-reports-first-quarter-2026-unaudited-financial-results" target="_blank" rel="noopener">链接</a></li>
+    <li id="r3"><b>EHang Holdings SEC Filing（2024）</b> <span class="src">财报</span> — 500+ 专项试验、4 万+ 试飞、65 大类/450+ 符合性项目、2023 交付与财务。<a href="https://ir.ehang.com/node/10431/html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r4"><b>新华财经：亿航智能获无人驾驶航空器合格证</b> <span class="src">媒体</span> — 2023-10-13 TC 颁发、专用条件与审定过程。<a href="https://www.cnfin.com/gs-lb/detail/20231013/3948126_1.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r5"><b>百度百科：EH216-S 无人驾驶载人航空器系统</b> <span class="src">存疑</span> — 时间线、2026-03 商运说法（与财报冲突）。<a href="https://baike.baidu.com/item/EH216/54442398" target="_blank" rel="noopener">链接</a></li>
+    <li id="r6"><b>百度百科：EH216S 警用载人无人机</b> <span class="src">存疑</span> — 650 kg、25 min、120 min 充电、四证日期、黄埔公安列装。<a href="https://baike.baidu.com/item/EH216S%E8%AD%A6%E7%94%A8%E8%BD%BD%E4%BA%BA%E6%97%A0%E4%BA%BA%E6%9C%BA/67213190" target="_blank" rel="noopener">链接</a></li>
+    <li id="r7"><b>中安在线：合肥"空中的士"亮相 APEC 宣传片</b> <span class="src">媒体</span> — 合肥 5000+ 架次、月均 158 架次、四证表述。<a href="http://ah.anhuinews.com/szxw/202611/t20261120_9780412.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r8"><b>亿航智能：泰国设立海外区域枢纽</b> <span class="src">官方</span> — 斯里兰卡/越南/马来西亚/泰国沙盒计划与免责声明。<a href="https://www.ehang.com/news/1411.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r9"><b>ChoZan：EHang eVTOL — Certification, Aircraft and Commercialization</b> <span class="src">媒体</span> — 9 万+ 架次、2025 销量与财务、合肥/芜湖运营数据。<a href="https://chozan.co/ehang-evtol" target="_blank" rel="noopener">链接</a></li>
+    <li id="r10"><b>澎湃新闻：飞行汽车的商业化实战，中国头部公司已经到哪一步了？</b> <span class="src">媒体</span> — 6 亿元指引撤回、创始人电话会、载人 434 架次。<a href="https://m.thepaper.cn/newsDetail_forward_34300927" target="_blank" rel="noopener">链接</a></li>
+    <li id="r11"><b>Geisou：China's low-altitude economy — the gate remains shut</b> <span class="src">媒体</span> — 应收账款、经营现金流、单机经济性测算。<a href="https://www.geisou.com/a/chinas-low-altitude-economy-dunhuang-takes-off-but-the-gate-remains-shut" target="_blank" rel="noopener">链接</a></li>
+    <li id="r12"><b>环球网：记者亲身体验国产"飞的"</b> <span class="src">媒体</span> — 8 万+ 架次、450+ 验证科目、云浮碳纤维生产实地观察。<a href="https://3w.huanqiu.com/a/de583b/4QK4FAGdS3v" target="_blank" rel="noopener">链接</a></li>
+    <li id="r13"><b>中国西藏网：全球首台无人驾驶"空中的士"上架售卖</b> <span class="src">媒体</span> — 2024-03 电商挂牌 239 万元、16 旋翼、多备份。<a href="http://tibet.cn/cn/Instant/expo/202403/t20240319_7593129.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r14"><b>亿航：EH216-S 型号合格审定所有计划试验完成</b> <span class="src">官方</span> — 全冗余/自主飞行/集群管理三项原则。<a href="https://www.ehang.com/news/981.htmlehang-certification-imminent/" target="_blank" rel="noopener">链接</a></li>
+    <li id="r15"><b>亿航：民航局成立 EH216 TC 审查工作组</b> <span class="src">官方</span> — 2021-04 首次会议、2020-12 申请。<a href="https://www.ehang.com/news/756.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r16"><b>亿航：EH216 北京首飞与 −14 ℃ 试飞</b> <span class="src">官方</span> — 极端环境试飞、2021-02 雁栖湖 5 架次。<a href="https://www.ehang.com/cn/video/show/372.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r17"><b>证券时报：低空赛道融资与市场数据</b> <span class="src">媒体</span> — 赛迪 1 万亿、民航局 2035 年 3.5 万亿、行业人士对闭环的判断。<a href="https://www.stcn.com/article/detail/3952092.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r18"><b>新华网：低空经济迈向体系化推进、规模化发展新阶段</b> <span class="src">媒体</span> — 2026 年 1.06 万亿预测、深圳/上海基础设施。<a href="https://xinhuanet.com/tech/20260120/022efb2fbec0450db7c4234d8f84da83/c.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r19"><b>三个皮匠：低空经济市场规模口径汇总</b> <span class="src">媒体</span> — 赛迪/民航局/工信部口径差异、eVTOL 细分 57.5 亿元。<a href="https://www.sgpjbg.com/searchtag/27146201.html" target="_blank" rel="noopener">链接</a></li>
+    <li id="r20"><b>微信公众号：全球主要 eVTOL 适航与商业化进展全景（截至 2026-11-01）</b> <span class="src">存疑</span> — 全球取证矩阵、竞品状态，需交叉核验。<a href="http://mp.weixin.qq.com/s?__biz=MzcwNzM4NDIyOQ==&amp;mid=2247484147&amp;idx=1&amp;sn=cfbabdae6645be27ecce322c6bd7c499&amp;chksm=f544f1cc9e858e3bcc21b7fff3d798a9694d65bd1c31a87fca84742fd13fbd9ed807af29f6f2" target="_blank" rel="noopener">链接</a></li>
+    <li id="r21"><b>FlightBrief：What Is eVTOL? The Complete Guide</b> <span class="src">媒体</span> — Joby / Archer / Beta 取证与财务对比。<a href="https://flightbrief.news/topics/evtol" target="_blank" rel="noopener">链接</a></li>
+    <li id="r22"><b>AviationStream：Electric Aircraft Production in 2026</b> <span class="src">媒体</span> — Joby / Eve / Vertical / Volocopter 进度。<a href="https://aviationstream.com/aviation-articles/electric-aircraft-production-2026" target="_blank" rel="noopener">链接</a></li>
+    <li id="r23"><b>Sky TV News：全球首款四证齐全载人 eVTOL 飞临香江</b> <span class="src">媒体</span> — 运行限制、固态电池 48 min、2026-03 商运说法、香港首飞。<a href="https://skytvnews.com/?hyzq/549.html" target="_blank" rel="noopener">链接</a></li>
+  </ol>
+</section>
+
+</main></div></div>
+
+<footer><div class="wrap">课程案例研究 · 飞行汽车技术基础 · Case Study 01B · 证据截止 2026-11-25。本文为公开信息整理与独立分析，不构成投资建议或适航结论。</div></footer>
+
+<script>
+(function(){
+  var bar=document.getElementById('progress');
+  function onScroll(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max*100):0)+'%';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  var btn=document.getElementById('menuBtn');
+  if(btn){btn.addEventListener('click',function(){
+    var d=document.querySelector('.toc-mobile');
+    if(d){d.open=!d.open;}
+  });}
+
+  var links=[].slice.call(document.querySelectorAll('.toc a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(a){a.classList.remove('active');});
+          var a=links.filter(function(x){return x.getAttribute('href')==='#'+e.target.id;})[0];
+          if(a){a.classList.add('active');}
+        }
+      });
+    },{rootMargin:'-88px 0px -70% 0px'});
+    secs.forEach(function(s){io.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>
